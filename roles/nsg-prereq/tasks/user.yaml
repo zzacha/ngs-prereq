@@ -5,6 +5,10 @@
     key: "{{ ngsraw_username }}"
   register: user_info
 
+- name: Debug user_info
+  debug:
+    var: user_info
+
 # Fail if user does not exist in IdM
 - name: Fail if user is absent in IdM
   fail:
