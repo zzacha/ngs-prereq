@@ -1,0 +1,13 @@
+---
+- name: "Set git_repo_url based on env_type"
+  set_fact:
+    git_repo_url: "{{ env_repos[env_type] }}"
+    git_branch: "{{ env_branch[env_type] }}"
+
+
+- name: "Clone scripts from {{ git_repo_url }}"
+  git:
+    repo: "{{ git_repo_url }}"
+    version: "{{ git_branch}}"
+    dest: "{{ ngsraw_home }}"
+    update: yes

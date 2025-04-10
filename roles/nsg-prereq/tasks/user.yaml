@@ -1,0 +1,56 @@
+# 1) Check if user 'ngsraw' is known to the system (e.g., via IdM, LDAP, or SSSD)
+- name: Check if ngsraw user exists in IdM
+  getent:
+    database: passwd
+    key: "{{ ngsraw_username }}"
+  register: user_info
+
+# Fail if user does not exist in IdM
+- name: Fail if user is absent in IdM
+  fail:
+    msg: "User '{{ ngsraw_username }}' not found in IdM. Please create it centrally first!"
+  when: not user_info.getent_passwd
+
+# Overwrite ngsraw_home with the discovered directory, if available
+- name: Set ngsraw_home to system home if discovered from IdM
+  set_fact:
+    ngsraw_home: "{{ user_info.getent_passwd.dir }}"
+  when:
+    - user_info.getent_passwd.dir is defined
+    - user_info.getent_passwd.dir | length > 0
+
+# Ensure user’s home directory is present
+- name: Create home directory if missing
+  file:
+    path: "{{ ngsraw_home }}"
+    state: directory
+    owner: "{{ ngsraw_username }}"
+    group: "{{ user_info.getent_passwd.gid }}"
+    mode: '0700'
+  # If the system-provided home dir is blank or undefined,
+  # fallback to {{ ngsraw_home }} from your defaults.
+
+# Ensure .ssh directory is present
+- name: Create .ssh directory
+  file:
+    path: "{{ ngsraw_home }}/.ssh"
+    state: directory
+    owner: "{{ ngsraw_username }}"
+    group: "{{ user_info.getent_passwd.gid }}"
+    mode: '0700'
+
+# Check if user already has an SSH key
+- name: Check if SSH key exists
+  stat:
+    path: "{{ ngsraw_home }}/.ssh/id_{{ ssh_key_type }}"
+  register: ssh_key
+
+# Generate SSH key if missing
+- name: Generate SSH key for ngsraw if none exists
+  become_user: "{{ ngsraw_username }}"
+  command: ssh-keygen -t {{ ssh_key_type }} \
+           -f {{ ngsraw_home }}/.ssh/id_{{ ssh_key_type }} \
+           -N ''
+  args:
+    creates: "{{ ngsraw_home }}/.ssh/id_{{ ssh_key_type }}"
+  when: not ssh_key.stat.exists

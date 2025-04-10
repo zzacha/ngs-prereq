@@ -1,0 +1,6 @@
+- name: Install prerequisites for data movement
+  hosts: all
+  become: true
+
+  roles:
+    - nsg-prereq

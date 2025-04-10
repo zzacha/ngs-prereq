@@ -1,0 +1,7 @@
+---
+- name: Ensure required packages (sshfs, nc) are installed on RHEL >= 8
+  package:
+    name:
+      - sshfs
+      - nc
+    state: present

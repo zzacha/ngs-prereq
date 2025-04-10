@@ -1,0 +1,20 @@
+# Which environment are we in? dev | qa | preprod | prod
+env_type: dev
+
+ngsraw_username: ngsraw
+ngsraw_home: /home/ngsraw
+ssh_key_type: ed25519
+
+# environment → repo dictionary map:
+env_repos:
+  dev: "https://github.com/zzacha/ngsraw_rsync"
+  qa: "https://github.com/zzacha/ngsraw_rsync"
+  preprod: "https://github.com/zzacha/ngsraw_rsync"
+  prod: "https://github.com/zzacha/ngsraw_rsync"
+
+# environment → branch dictionary map
+env_branch:
+  dev: "hpc-aws"
+  qa: "hpc-aws"
+  preprod: "hpc-aws"
+  prod: "hpc-aws" # or main depending on BIX repo structure
