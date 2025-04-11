@@ -12,6 +12,18 @@
   debug:
     var: repo_basename
 
+- name: Ensure .netrc for GitHub authentication
+  copy:
+    dest: "{{ ngsraw_home }}/.netrc"
+    mode: '0600'
+    owner: "{{ ngsraw_username }}"
+    group: "{{ discovered_gid }}"
+    content: |
+      machine github.com
+      login {{ github_username }}
+      password {{ github_pat }}
+  no_log: true
+  
 - name: "Clone scripts from {{ git_repo_url }} as {{ ngsraw_username }}"
   become: true
   become_user: "{{ ngsraw_username }}"
