@@ -4,10 +4,17 @@
     git_repo_url: "{{ env_repos[env_type] }}"
     git_branch: "{{ env_branch[env_type] }}"
 
+- name: Extract repo_basename from repo_url using regex
+  set_fact:
+    repo_basename: "{{ repo_url | regex_replace('.*/(.+)\\.git$', '\\1') }}"
+
+- name: Debug repo_basename
+  debug:
+    var: repo_basename
 
 - name: "Clone scripts from {{ git_repo_url }}"
   git:
     repo: "{{ git_repo_url }}"
     version: "{{ git_branch}}"
-    dest: "{{ ngsraw_home }}"
+    dest: "{{ ngsraw_home }}/{{ repo_basename }}"
     update: yes
