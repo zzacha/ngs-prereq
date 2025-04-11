@@ -1,6 +1,8 @@
 - name: Install prerequisites for data movement
   hosts: all
   become: true
+  vars_files:
+    - vault/gh-zzacha-ngsraw_rsync.yaml
 
   roles:
     - nsg-prereq
