@@ -6,7 +6,7 @@
 
 - name: Extract repo_basename from repo_url using regex
   set_fact:
-    repo_basename: "{{ git_repo_url | regex_replace('.*/(.+)\\.git$', '\\1') }}"
+    repo_basename: "{{ git_repo_url | regex_replace('^.*/', '') | regex_replace('\\.git$', '') }}"
 
 - name: Debug repo_basename
   debug:
