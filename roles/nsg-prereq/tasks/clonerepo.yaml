@@ -23,7 +23,7 @@
       login {{ github_username }}
       password {{ github_pat }}
   no_log: true
-  
+
 - name: "Clone scripts from {{ git_repo_url }} as {{ ngsraw_username }}"
   become: true
   become_user: "{{ ngsraw_username }}"
@@ -33,3 +33,10 @@
     dest: "{{ ngsraw_home }}/{{ repo_basename }}"
     update: yes
     force: yes #  fresh clone
+
+- name: Clean up .netrc for security
+  become: true
+  become_user: "{{ ngsraw_username }}"
+  file:
+    path: "{{ ngsraw_home }}/.netrc"
+    state: absent
