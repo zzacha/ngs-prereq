@@ -18,3 +18,4 @@
     version: "{{ git_branch}}"
     dest: "{{ ngsraw_home }}/{{ repo_basename }}"
     update: yes
+    force: yes #  fresh clone
