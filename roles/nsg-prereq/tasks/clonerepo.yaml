@@ -12,15 +12,9 @@
   debug:
     var: repo_basename
 
-- name: Ensure destination directory exists with correct permissions and sticky bit
-  file:
-    path: "{{ ngsraw_home }}/{{ repo_basename }}"
-    state: directory
-    owner: "{{ ngsraw_username }}"
-    group: "{{ discovered_gid }}"
-    mode: '2775'  # rwxrwsr-x with setgid bit set
-
-- name: "Clone scripts from {{ git_repo_url }}"
+- name: "Clone scripts from {{ git_repo_url }} as {{ ngsraw_username }}"
+  become: true
+  become_user: "{{ ngsraw_username }}"
   git:
     repo: "{{ git_repo_url }}"
     version: "{{ git_branch}}"
