@@ -12,7 +12,9 @@
   debug:
     var: repo_basename
 
-- name: "Clone scripts from {{ git_repo_url }}"
+- name: "Clone scripts from {{ git_repo_url }} as {{ ngsraw_username }}"
+  become: true
+  become_user: "{{ ngsraw_username }}"
   git:
     repo: "{{ git_repo_url }}"
     version: "{{ git_branch}}"
