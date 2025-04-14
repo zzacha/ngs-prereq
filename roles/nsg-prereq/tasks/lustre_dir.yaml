@@ -44,21 +44,24 @@
       - raw_data
       - machine_fastqs
       - run_data
-  loop: "{{ machine_map | dict2items }}"
+# Construct a list of all combinations between:
+#   - machine types (keys from machine_map, e.g., "nextseq")
+#   - machine IDs for each type (values in machine_map, e.g., "AWS00001")
+#   - output base directories (e.g., "raw_data", "run_data", "machine_fastqs")
+#
+# Steps:
+#   1. `dict2items` converts the machine_map dictionary into a list of key/value pairs.
+#   2. `subelements('value')` pairs each machine type with its corresponding machine IDs.
+#   3. `product(output_bases)` creates the Cartesian product with output base names.
+#   4. `list` creates the final list of tuples to loop over.
+# Results in loop items like:
+#   - (({'key': 'nextseq'}, 'AWS00001'), 'raw_data')
+  loop: "{{ machine_map | dict2items | subelements('value') | product(output_bases) | list }}"
   loop_control:
-    loop_var: m_type
-  when: machine_map is defined
-  block:
-    - name: Create dirs for each m_id under {{ m_type.key }}
-      loop: "{{ m_type.value }}"
-      loop_control:
-        loop_var: m_id
-      block:
-        - name: Create output base dirs for {{ m_type.key }}/{{ m_id }}
-          file:
-            path: "/lustre/ngsservice/{{ item }}/{{ m_type.key }}/{{ m_id }}"
-            state: directory
-            owner: "{{ ngsraw_username }}"
-            group: "{{ discovered_gid }}"
-            mode: '0755'
-          loop: "{{ output_bases }}"
+    label: "{{ item.0.0.key }}/{{ item.0.1 }}/{{ item.1 }}"
+  file:
+    path: "/lustre/ngsservice/{{ item.1 }}/{{ item.0.0.key }}/{{ item.0.1 }}"
+    state: directory
+    owner: "{{ ngsraw_username }}"
+    group: "{{ discovered_gid }}"
+    mode: '2755'
