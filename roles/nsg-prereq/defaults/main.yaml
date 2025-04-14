@@ -5,6 +5,12 @@ ngsraw_username: ngsraw
 ngsraw_home: /home/ngsraw
 ssh_key_type: ed25519
 
+# Lustre group owneship and directory mounts configuration
+
+lustre_group: ngsservice
+lustre_root_path: /lustre/ngsservice
+lustre_mount_path: /lustre/ngsservice/qnap_mount_points
+
 # environment → repo dictionary map:
 env_repos:
   dev: "https://github.com/zzacha/ngsraw_rsync"
