@@ -1,0 +1,26 @@
+- name: Ensure IdM group ngsservice exists
+  getent:
+    database: group
+    key: ngsservice
+  register: ngsservice_group
+
+- name: Fail if ngsservice group is missing
+  fail:
+    msg: "Group 'ngsservice' not found in IdM — check your system config."
+  when: ngsservice_group.ansible_facts.getent_group is not defined
+
+- name: Ensure /lustre/ngsservice exists with root:ngsservice ownership
+  file:
+    path: /lustre/ngsservice
+    state: directory
+    owner: root
+    group: ngsservice
+    mode: '2775'
+
+- name: Ensure /lustre/ngsservice/qnap_mount_points exists with ngsraw:ngsraw ownership
+  file:
+    path: /lustre/ngsservice/qnap_mount_points
+    state: directory
+    owner: "{{ ngsraw_username }}"
+    group: "{{ discovered_gid }}"
+    mode: '2775'
