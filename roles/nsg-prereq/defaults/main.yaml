@@ -11,10 +11,14 @@ lustre_group: ngsservice
 lustre_root_path: /lustre/ngsservice
 lustre_mount_path: /lustre/ngsservice/qnap_mount_points
 
-# Sequencing machine IDs for the Lustre mount points 
-m_ids:
-  - AWS00001
-  - AWS00002
+# Sequencing machine_type to machine_ids map for the Lustre mount points 
+machine_map:
+  gridion:
+    - AWS00001
+  nextseq:
+    - AWS00002
+  miseq:
+    - AWS00003
 
 # environment → repo dictionary map:
 env_repos:

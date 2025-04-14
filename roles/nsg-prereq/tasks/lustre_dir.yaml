@@ -27,11 +27,13 @@
 
 - name: Ensure Cache_<m_id> directories exist under qnap_mount_points
   file:
-    path: "{{ lustre_mount_path }}/Cache_{{ item }}"
+    path: "{{ lustre_mount_path }}/Cache_{{ m_id }}"
     state: directory
     owner: "{{ ngsraw_username }}"
     group: "{{ discovered_gid }}"
     mode: '2755'
-  loop: "{{ m_ids }}"
+  loop: "{{ machine_map | dict2items | map(attribute='value') | flatten }}"
+  loop_control:
+    loop_var: m_id
   when:
-    - m_ids is defined
+    - machine_map is defined
