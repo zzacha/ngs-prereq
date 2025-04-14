@@ -37,3 +37,28 @@
     loop_var: m_id
   when:
     - machine_map is defined
+
+- name: Create output directories per m_type and m_id
+  vars:
+    output_bases:
+      - raw_data
+      - machine_fastqs
+      - run_data
+  loop: "{{ machine_map | dict2items }}"
+  loop_control:
+    loop_var: m_type
+  when: machine_map is defined
+  block:
+    - name: Create dirs for each m_id under {{ m_type.key }}
+      loop: "{{ m_type.value }}"
+      loop_control:
+        loop_var: m_id
+      block:
+        - name: Create output base dirs for {{ m_type.key }}/{{ m_id }}
+          file:
+            path: "/lustre/ngsservice/{{ item }}/{{ m_type.key }}/{{ m_id }}"
+            state: directory
+            owner: "{{ ngsraw_username }}"
+            group: "{{ discovered_gid }}"
+            mode: '0755'
+          loop: "{{ output_bases }}"
