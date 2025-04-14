@@ -65,3 +65,12 @@
     owner: "{{ ngsraw_username }}"
     group: "{{ discovered_gid }}"
     mode: '2755'
+
+# Requirement by ONT qnap-to-rundata.sh
+- name: Ensure run_transfers_complete.csv exists with correct ownership
+  file:
+    path: "{{ lustre_mount_path }}/run_transfers_complete.csv"
+    state: touch
+    owner: "{{ ngsraw_username }}"
+    group: "{{ discovered_gid }}"
+    mode: '0664'
