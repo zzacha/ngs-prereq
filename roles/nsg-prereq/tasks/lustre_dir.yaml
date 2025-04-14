@@ -24,3 +24,14 @@
     owner: "{{ ngsraw_username }}"
     group: "{{ discovered_gid }}"
     mode: '2775'
+
+- name: Ensure Cache_<m_id> directories exist under qnap_mount_points
+  file:
+    path: "{{ lustre_mount_path }}/Cache_{{ item }}"
+    state: directory
+    owner: "{{ ngsraw_username }}"
+    group: "{{ discovered_gid }}"
+    mode: '2755'
+  loop: "{{ m_ids }}"
+  when:
+    - m_ids is defined
